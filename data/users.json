@@ -1,0 +1,17 @@
+[
+  {
+    "email": "joe@success.com",
+    "password": "Coffee2Go!",
+    "type": "success"
+  },
+  {
+    "email": "joe@delay.com",
+    "password": "Coffee2Go!",
+    "type": "delay"
+  },
+  {
+    "email": "joe@blocked.com",
+    "password": "Coffee2Go!",
+    "type": "blocked"
+  }
+]
