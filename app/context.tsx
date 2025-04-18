@@ -1,10 +1,10 @@
 'use client';
 
-import { createContext, useReducer, useContext } from 'react';
+import { createContext, useReducer, useContext, useEffect } from 'react';
 
 type Auth = {
   loggedIn: boolean;
-  user: Object | null;
+  user: object | null;
 };
 
 type Action =
@@ -12,15 +12,20 @@ type Action =
   | { type: 'LOGOUT' };
 
 function authReducer(state: Auth, action: Action): Auth {
+  let newState;
   switch (action.type) {
     case 'LOGIN':
-      return {
+      newState = {
         ...state,
         loggedIn: true,
         user: action.payload.user,
       };
+      localStorage.setItem('auth', JSON.stringify(newState));
+      return newState;
     case 'LOGOUT':
-      return { loggedIn: false, user: null };
+      newState = { loggedIn: false, user: null };
+      localStorage.removeItem('auth');
+      return newState;
     default:
       return state;
   }
@@ -36,6 +41,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loggedIn: false,
     user: null,
   });
+
+  useEffect(() => {
+    const savedAuth = localStorage.getItem('auth');
+    if (savedAuth) {
+      dispatch({
+        type: 'LOGIN',
+        payload: { user: JSON.parse(savedAuth).user },
+      });
+    }
+  }, []);
 
   return (
     <AuthContext.Provider value={{ state, dispatch }}>

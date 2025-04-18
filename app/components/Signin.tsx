@@ -10,7 +10,6 @@ import { LoginSchema, type LoginSchemaType } from '@/lib/validation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context';
 import toast from 'react-hot-toast';
 
@@ -22,9 +21,9 @@ import {
   FormMessage,
   FormLabel,
 } from '@/components/ui/form';
+import { cn } from '@/lib/utils';
 
-type SigninProps = {};
-export function Signin({}: SigninProps) {
+export function Signin() {
   const auth = useAuth();
   const form = useForm<LoginSchemaType>({
     resolver: zodResolver(LoginSchema),
@@ -37,7 +36,6 @@ export function Signin({}: SigninProps) {
   });
 
   const { isSubmitting } = form.formState;
-  const router = useRouter();
 
   const onSubmit: SubmitHandler<LoginSchemaType> = async (data) => {
     const timeout = setTimeout(() => {
@@ -47,7 +45,6 @@ export function Signin({}: SigninProps) {
     if (result.user) {
       auth.dispatch({ type: 'LOGIN', payload: { user: result.user } });
       toast.success('Welcome!', { icon: '👋' });
-      router.push('/pricing');
     } else if (result.error) {
       toast.error(result.error, { icon: '❌' });
     }
@@ -57,7 +54,7 @@ export function Signin({}: SigninProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <Card className="gap-5 py-10 px-15">
+        <Card className="gap-5 py-8 px-8 sm:py-10 sm:px-15">
           <h2 className="text-title text-heading font-bold">Sign Up Now</h2>
           <FormField
             name="email"
@@ -102,7 +99,10 @@ export function Signin({}: SigninProps) {
                     />
                   </FormControl>
                   <FormLabel
-                    className={field.value ? 'text-text' : 'text-text/50'}
+                    className={cn(
+                      field.value ? 'text-text' : 'text-text/50',
+                      'hover:text-text/80 transition-colors duration-200 cursor-pointer'
+                    )}
                   >
                     I agree to the Terms of Service
                   </FormLabel>
